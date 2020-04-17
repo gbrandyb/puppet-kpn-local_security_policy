@@ -202,12 +202,12 @@ Puppet::Type.type(:local_security_policy).provide(:policy) do
       # we can utilize the IniFile class to write out the data in ini format
       inf[section] = section_value
       inf.write(filename: infout, encoding: 'utf-8')
-      secedit('/configure', '/db', sdbout, '/cfg', infout)
+      secedit('/configure', '/db', sdbout, '/cfg', infout, '/log', logout)
     ensure
       FileUtils.rm_f(temp_file)
-      FileUtils.rm_f(infout)
-      FileUtils.rm_f(sdbout)
-      FileUtils.rm_f(logout)
+      # FileUtils.rm_f(infout)
+      # FileUtils.rm_f(sdbout)
+      # FileUtils.rm_f(logout)
     end
   end
 end
