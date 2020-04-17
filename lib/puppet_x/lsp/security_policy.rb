@@ -74,9 +74,21 @@ class SecurityPolicy
     inffile ||= temp_file
     unless @file_object
       export_policy_settings(inffile)
-      File.open inffile, 'r:IBM437' do |file|
-        # remove /r/n and remove the BOM
-        inffile_content = file.read.force_encoding('utf-16le').encode('utf-8', universal_newline: true).delete("\xEF\xBB\xBF")
+
+      # There was an issue with handling multiline registry key strings that contained
+      # line feeds (\n). They would cause the ini parser to throw an error.  Need to enclose 
+      # the value in double quotes before applying universal newlines in order to flag the parser
+      # that it needs to process it as a multiline value.
+
+      File.open inffile, 'rb:UTF-16LE' do |file|
+        
+        #encode as UTF-8 and remove the BOM
+        temp_content = file.read.encode('utf-8').gsub("\xEF\xBB\xBF", '')
+        # the =7 is the registry type for multiline strings. Need to wrap the entire value (including leading 7)
+        # in double quotes
+        multistr_regex = Regexp.new('=7,(.*?)(\r\n)', Regexp::MULTILINE)
+        inffile_content = temp_content.gsub(multistr_regex, '="7,\1"\2')
+       
         @file_object ||= PuppetX::IniFile.new(content: inffile_content)
       end
     end
