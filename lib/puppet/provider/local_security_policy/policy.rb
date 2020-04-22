@@ -179,7 +179,7 @@ Puppet::Type.type(:local_security_policy).provide(:policy) do
       sids = Array[]
       pv = policy_hash[:policy_value]
       dbgstr = 'CONVERT_VALUE: Policy_Name: ' + policy_hash[:name].to_s + '\tPolicy_Value ' + pv.to_s
-      dbgstr.write(filename: dgbout, encoding: 'utf-8')
+      dbgstr.write(filename: dbgout, encoding: 'utf-8')
       pv.split(',').sort.each do |suser|
         sids << ((suser !~ %r{^(\*S-1-.+)$}) ? ('*' + Puppet::Util::Windows::SID.name_to_sid(suser).to_s) : suser.to_s)
       end
