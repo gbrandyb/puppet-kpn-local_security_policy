@@ -58,6 +58,10 @@ class SecurityPolicy
       next if section == 'Version'
       begin
         policy_desc, policy_values = SecurityPolicy.find_mapping_from_policy_name(parameter_name)
+        dbgout = "c:\\windows\\temp\\debug2out.log"
+        
+        dbgstr = 'Policy_Desc: ' + policy_desc + "\tPolicy_Value: " + policy_name + "\r\n"
+        File.write(dbgout, dbgstr, mode: "a")
         if policy_desc == policy_name
           policy_value_current = translate_value(parameter_value, policy_values)
         end
