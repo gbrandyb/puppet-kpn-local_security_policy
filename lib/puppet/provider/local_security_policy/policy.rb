@@ -175,6 +175,7 @@ Puppet::Type.type(:local_security_policy).provide(:policy) do
     when 'Privilege Rights'
       sids = Array[]
       pv = policy_hash[:policy_value]
+      puts 'CONVERT_VALUE: Policy_Name: ' + policy_hash[:name].to_s + '\tPolicy_Value ' + pv.to_s
       pv.split(',').sort.each do |suser|
         sids << ((suser !~ %r{^(\*S-1-.+)$}) ? ('*' + Puppet::Util::Windows::SID.name_to_sid(suser).to_s) : suser.to_s)
       end
