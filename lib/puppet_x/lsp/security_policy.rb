@@ -60,7 +60,7 @@ class SecurityPolicy
         policy_desc, policy_values = SecurityPolicy.find_mapping_from_policy_name(parameter_name)
         dbgout = "c:\\windows\\temp\\debug2out.log"
         
-        dbgstr = 'Policy_Desc: ' + policy_desc + "\tPolicy_Value: " + policy_name + "\r\n"
+        dbgstr = 'GET_POLICY_VALUE_CURRENT: Policy_Desc: ' + policy_desc + "\tPolicy_Value: " + policy_name.to_s + "\r\n"
         File.write(dbgout, dbgstr, mode: "a")
         if policy_desc == policy_name
           policy_value_current = translate_value(parameter_value, policy_values)
@@ -114,6 +114,10 @@ class SecurityPolicy
   # converts everything to a string
   # returns the value
   def self.translate_value(value, policy_values)
+    dbgout = "c:\\windows\\temp\\debug2out.log"
+    
+    dbgstr = 'TRANSLATE_VALUE: Value Arg: ' + value.to_s
+    File.write(dbgout, dbgstr, mode: "a")
     value = value.to_s.strip
     case policy_values[:policy_type]
     when 'Registry Values'
@@ -132,7 +136,9 @@ class SecurityPolicy
       value = value.to_i.zero? ? 'disabled' : 'enabled'
     when :multi_select
       value = policy_values[:policy_options][value]
-    end
+    end     
+    dbgstr += "\tValue return: " + value.to_s + "\r\n"
+    File.write(dbgout, dbgstr, mode: "a")
     value
   end
 
