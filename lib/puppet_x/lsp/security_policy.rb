@@ -50,6 +50,9 @@ class SecurityPolicy
   end
 
   def self.get_policy_value_current(policy_name)
+    #debug 
+    dbgout = "c:\\windows\\temp\\debug2out.log" 
+
     policy_value_current = 'empty?'
     inf = read_policy_settings
     # need to find the policy, section_header, policy_setting, policy_value and reg_type
@@ -59,6 +62,10 @@ class SecurityPolicy
       begin
         policy_desc, policy_values = SecurityPolicy.find_mapping_from_policy_name(parameter_name)
         
+        #debug
+        dbgstr = "Policy_name: #{policy_name}\tParameter_name: #{parameter_name}\r\n"
+        File.write(dbgout, dbgstr, mode: "a")
+        
         if policy_desc == policy_name
           policy_value_current = translate_value(parameter_value, policy_values)
         end
@@ -66,7 +73,7 @@ class SecurityPolicy
         Puppet.debug e.message
       end
     end
-    dbgout = "c:\\windows\\temp\\debug2out.log"      
+         
     dbgstr = 'GET_POLICY_VALUE_CURRENT: Policy_Name: ' + policy_name.to_s + "\tPolicy_Value: " + policy_value_current.to_s + "\r\n"
     File.write(dbgout, dbgstr, mode: "a")
     policy_value_current
