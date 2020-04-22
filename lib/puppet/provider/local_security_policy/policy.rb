@@ -173,9 +173,13 @@ Puppet::Type.type(:local_security_policy).provide(:policy) do
     when 'Event Audit'
       value = SecurityPolicy.event_to_audit_id(policy_hash[:policy_value])
     when 'Privilege Rights'
+      time = Time.now
+      time = time.strftime('%Y%m%d%H%M%S')
+      dbgout = "c:\\windows\\temp\\debugout-#{time}.inf"
       sids = Array[]
       pv = policy_hash[:policy_value]
-      puts 'CONVERT_VALUE: Policy_Name: ' + policy_hash[:name].to_s + '\tPolicy_Value ' + pv.to_s
+      dbgstr = 'CONVERT_VALUE: Policy_Name: ' + policy_hash[:name].to_s + '\tPolicy_Value ' + pv.to_s
+      dbgstr.write(filename: dgbout, encoding: 'utf-8')
       pv.split(',').sort.each do |suser|
         sids << ((suser !~ %r{^(\*S-1-.+)$}) ? ('*' + Puppet::Util::Windows::SID.name_to_sid(suser).to_s) : suser.to_s)
       end
@@ -186,7 +190,6 @@ Puppet::Type.type(:local_security_policy).provide(:policy) do
 
   # writes out one policy at a time using the InfFile Class and secedit
   def write_policy_to_system(policy_hash)
-    puts "writing sys policy"
     time = Time.now
     time = time.strftime('%Y%m%d%H%M%S')
     infout = "c:\\windows\\temp\\infimport-#{time}.inf"
