@@ -68,6 +68,8 @@ class SecurityPolicy
         
         if policy_desc == policy_name
           policy_value_current = translate_value(parameter_value, policy_values)
+          # no need to keep searching once we found a match
+          break
         end
       rescue KeyError => e
         Puppet.debug e.message
