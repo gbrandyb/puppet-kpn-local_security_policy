@@ -50,8 +50,6 @@ class SecurityPolicy
   end
 
   def self.get_policy_value_current(policy_name)
-    #debug 
-    dbgout = "c:\\windows\\temp\\debug2out.log" 
 
     policy_value_current = 'empty?'
     inf = read_policy_settings
@@ -61,11 +59,6 @@ class SecurityPolicy
       next if section == 'Version'
       begin
         policy_desc, policy_values = SecurityPolicy.find_mapping_from_policy_name(parameter_name)
-        
-        #debug
-        dbgstr = "Policy_name: #{policy_name}\tParameter_name: #{parameter_name}\r\n"
-        File.write(dbgout, dbgstr, mode: "a")
-        
         if policy_desc == policy_name
           policy_value_current = translate_value(parameter_value, policy_values)
           # no need to keep searching once we found a match
@@ -75,9 +68,6 @@ class SecurityPolicy
         Puppet.debug e.message
       end
     end
-         
-    dbgstr = 'GET_POLICY_VALUE_CURRENT: Policy_Name: ' + policy_name.to_s + "\tPolicy_Value: " + policy_value_current.to_s + "\r\n"
-    File.write(dbgout, dbgstr, mode: "a")
     policy_value_current
   end
 
@@ -124,9 +114,6 @@ class SecurityPolicy
   # returns the value
   def self.translate_value(value, policy_values)
     
-    #debug
-    beginval = value.to_s
-    
     value = value.to_s.strip
     case policy_values[:policy_type]
     when 'Registry Values'
@@ -151,11 +138,6 @@ class SecurityPolicy
     when :multi_select
       value = policy_values[:policy_options][value]
     end     
-    
-    #debug
-    dbgout = "c:\\windows\\temp\\debug2out.log"
-    dbgstr = "TRANSLATE_VALUE: Value Parameter: " + beginval + "\tValue return: " + value.to_s + "\r\n"
-    File.write(dbgout, dbgstr, mode: "a")
     value
   end
 

@@ -175,19 +175,13 @@ Puppet::Type.type(:local_security_policy).provide(:policy) do
     when 'Privilege Rights'
       sids = Array[]
       pv = policy_hash[:policy_value]
-      #debug
-      dbgout = "c:\\windows\\temp\\debug2out.log"
-      dbgstr = "CONVERT_VALUE: Policy_Name: #{policy_hash[:name].to_s}\tPolicy_Value: #{pv.to_s}\r\n"
-      File.write(dbgout, dbgstr, mode: "a")
-      #/debug
       pv.split(',').sort.each do |suser|
         unless 'empty?' == suser
           sids << ((suser !~ %r{^(\*S-1-.+)$}) ? ('*' + Puppet::Util::Windows::SID.name_to_sid(suser).to_s) : suser.to_s)      
         end
       end
       value = sids.sort.join(',')
-      #debug
-      File.write(dbgout, "CONVERT_VALUE: Policy_Name: #{policy_hash[:name].to_s}\tConverted_Value: #{value.to_s}\r\n", mode: "a")
+      
     end
     value
   end
@@ -214,9 +208,9 @@ Puppet::Type.type(:local_security_policy).provide(:policy) do
       secedit('/configure', '/db', sdbout, '/cfg', infout, '/log', logout)
     ensure
       FileUtils.rm_f(temp_file)
-      # FileUtils.rm_f(infout)
-      # FileUtils.rm_f(sdbout)
-      # FileUtils.rm_f(logout)
+      FileUtils.rm_f(infout)
+      FileUtils.rm_f(sdbout)
+      FileUtils.rm_f(logout)
     end
   end
 end
