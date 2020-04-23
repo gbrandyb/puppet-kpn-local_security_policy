@@ -134,7 +134,12 @@ class SecurityPolicy
     when 'Privilege Rights'
       sids = Array.[]
       value.split(',').sort.each do |suser|
-        sids << ((suser !~ %r{^(\*S-1-.+)$}) ? ('*' + Puppet::Util::Windows::SID.name_to_sid(suser).to_s) : suser.to_s)
+
+        # if the right doesn't already exist, we will get an "empty?" included in the list along 
+        # with the desired rights. Make sure to skip the empty?
+        unless 'empty?' == suser
+          sids << ((suser !~ %r{^(\*S-1-.+)$}) ? ('*' + Puppet::Util::Windows::SID.name_to_sid(suser).to_s) : suser.to_s)
+        end
       end
       value = sids.sort.join(',')
     end

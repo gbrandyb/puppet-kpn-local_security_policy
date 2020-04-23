@@ -173,13 +173,12 @@ Puppet::Type.type(:local_security_policy).provide(:policy) do
     when 'Event Audit'
       value = SecurityPolicy.event_to_audit_id(policy_hash[:policy_value])
     when 'Privilege Rights'
-      time = Time.now
-      time = time.strftime('%Y%m%d%H%M%S')
-      dbgout = "c:\\windows\\temp\\debugout-#{time}.inf"
+      #debug
+      dbgout = "c:\\windows\\temp\\debug2out.log"
       sids = Array[]
       pv = policy_hash[:policy_value]
       dbgstr = 'CONVERT_VALUE: Policy_Name: ' + policy_hash[:name].to_s + '\tPolicy_Value ' + pv.to_s
-      File.write(dbgout, dbgstr)
+      File.write(dbgout, dbgstr, mode: "a")
       pv.split(',').sort.each do |suser|
         sids << ((suser !~ %r{^(\*S-1-.+)$}) ? ('*' + Puppet::Util::Windows::SID.name_to_sid(suser).to_s) : suser.to_s)
       end
