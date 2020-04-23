@@ -173,16 +173,21 @@ Puppet::Type.type(:local_security_policy).provide(:policy) do
     when 'Event Audit'
       value = SecurityPolicy.event_to_audit_id(policy_hash[:policy_value])
     when 'Privilege Rights'
-      #debug
-      dbgout = "c:\\windows\\temp\\debug2out.log"
       sids = Array[]
       pv = policy_hash[:policy_value]
-      dbgstr = 'CONVERT_VALUE: Policy_Name: ' + policy_hash[:name].to_s + '\tPolicy_Value ' + pv.to_s
+      #debug
+      dbgout = "c:\\windows\\temp\\debug2out.log"
+      dbgstr = "CONVERT_VALUE: Policy_Name: #{policy_hash[:name].to_s}\tPolicy_Value: #{pv.to_s}\r\n"
       File.write(dbgout, dbgstr, mode: "a")
+      #/debug
       pv.split(',').sort.each do |suser|
-        sids << ((suser !~ %r{^(\*S-1-.+)$}) ? ('*' + Puppet::Util::Windows::SID.name_to_sid(suser).to_s) : suser.to_s)
+        unless 'empty?' == suser
+          sids << ((suser !~ %r{^(\*S-1-.+)$}) ? ('*' + Puppet::Util::Windows::SID.name_to_sid(suser).to_s) : suser.to_s)      
+        end
       end
       value = sids.sort.join(',')
+      #debug
+      File.write(dbgout, "CONVERT_VALUE: Policy_Name: #{policy_hash[:name].to_s}\tConverted_Value: #{value.to_s}\r\n")
     end
     value
   end
