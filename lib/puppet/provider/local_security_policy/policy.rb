@@ -187,7 +187,7 @@ Puppet::Type.type(:local_security_policy).provide(:policy) do
       end
       value = sids.sort.join(',')
       #debug
-      File.write(dbgout, "CONVERT_VALUE: Policy_Name: #{policy_hash[:name].to_s}\tConverted_Value: #{value.to_s}\r\n")
+      File.write(dbgout, "CONVERT_VALUE: Policy_Name: #{policy_hash[:name].to_s}\tConverted_Value: #{value.to_s}\r\n", mode: "a")
     end
     value
   end
